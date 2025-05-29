@@ -7,5 +7,7 @@ public class HeroConfig : ScriptableObject
     public HeroType heroType;
     public int baseHealth;
     public int baseDamage;
-    public GameObject prefab;
+    public HeroEvolutionChainConfig evolutionConfig;
+    public Material materialPrefab;
+    public GameObject HeroPrefab;
 }

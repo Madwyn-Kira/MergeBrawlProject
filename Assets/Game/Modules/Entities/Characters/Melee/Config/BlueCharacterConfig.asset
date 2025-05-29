@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7442d8f47d16a4744a9eb7458087725b, type: 3}
+  m_Name: BlueCharacterConfig
+  m_EditorClassIdentifier: 
+  heroName: Blue
+  heroType: 2
+  baseHealth: 200
+  baseDamage: 100
+  evolutionConfig: {fileID: 11400000, guid: 0736316231c1e7449934040874fa46c7, type: 2}
+  materialPrefab: {fileID: 2100000, guid: d1c35ed7c31b4eb47852a7195084a04a, type: 2}
+  HeroPrefab: {fileID: 8211205147395552080, guid: 9938060fad557a94daaa12f2626ac393, type: 3}
