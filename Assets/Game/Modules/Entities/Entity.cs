@@ -13,8 +13,7 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
     [HideInInspector]
     public HeroEvolutionChainConfig EvolutionConfig;
 
-    [HideInInspector]
-    public BoardSpawnCell currentCell;
+    public BoardSpawnCell CurrentCell { get; private set; }
 
     public event Action OnMerge;
     public event Action<Entity> OnSpawned;
@@ -35,15 +34,6 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
         GetComponent<MeshRenderer>().material = newConfig.materialPrefab;
     }
 
-    public void ChangeCell(BoardSpawnCell cell)
-    {
-        if (currentCell != null)
-            currentCell.ClearCell();
-
-        currentCell = cell;
-        currentCell.PlaceHero(this);
-    }
-
     abstract public void Fight();
 
     virtual public void ChangeState(StateMachine newState)
@@ -55,21 +45,32 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
         CurrentState.EnterState(this);
     }
 
-    virtual public bool Merge(Entity other)
+    public void AssignCell(BoardSpawnCell cell)
     {
-        if (other.Config == Config)
-        {
-            int _currentConfigIndexInEvolution = EvolutionConfig.EvolutionChain.IndexOf(Config);
-            if (EvolutionConfig.EvolutionChain.IndexOf(Config) < EvolutionConfig.EvolutionChain.Count - 1)
-            {
-                HeroConfig nextData = EvolutionConfig.EvolutionChain[_currentConfigIndexInEvolution + 1];
-                Initialize(nextData);
-                Destroy(other.gameObject);
+        CurrentCell = cell;
+    }
 
-                return true;
-            }
+    public bool CanMergeWith(Entity other)
+    {
+        return other != null
+               && other != this
+               && other.Config.heroType == Config.heroType;
+    }
+
+    virtual public bool TryMerge(Entity other)
+    {
+        if (!CanMergeWith(other))
+            return false;
+
+        int _currentConfigIndexInEvolution = EvolutionConfig.EvolutionChain.IndexOf(Config);
+        if (EvolutionConfig.EvolutionChain.IndexOf(Config) < EvolutionConfig.EvolutionChain.Count - 1)
+        {
+            HeroConfig nextData = EvolutionConfig.EvolutionChain[_currentConfigIndexInEvolution + 1];
+            Initialize(nextData);
+            Destroy(other.gameObject);
         }
-        return false;
+
+        return true;
     }
 
     virtual public void OnDie()
