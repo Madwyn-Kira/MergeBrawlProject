@@ -1,112 +1,133 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class DragHandler : MonoBehaviour
+public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
-    [SerializeField] private LayerMask unitLayer;
-    [SerializeField] private LayerMask cellLayer;
-    [SerializeField] private float fixedY = 0.5f;
-
-    private Camera cam;
-    private Entity selectedUnit;
+    private Camera mainCamera;
     private Vector3 originalPosition;
+    private Entity entity;
+
+    private float fixedHeight = 0f;
+    private Vector3 dragOffset;
     private Plane dragPlane;
-    private bool isDragging;
 
     private void Awake()
     {
-        cam = Camera.main;
-        dragPlane = new Plane(Vector3.up, Vector3.up * fixedY);
+        mainCamera = Camera.main;
+        entity = GetComponent<Entity>();
+        dragPlane = new Plane(Vector3.up, new Vector3(0, fixedHeight, 0));
     }
 
-    void Update()
+    public void OnBeginDrag(PointerEventData eventData)
     {
-        if (Input.touchCount > 0)
+
+        Ray ray = mainCamera.ScreenPointToRay(eventData.position);
+        if (dragPlane.Raycast(ray, out float enter))
         {
-            Touch touch = Input.GetTouch(0);
-            HandleInput(touch.phase, touch.position);
+            originalPosition = transform.position;
+            entity.CurrentCell?.Clear();
+            Vector3 hitPoint = ray.GetPoint(enter);
+            dragOffset = transform.position - hitPoint;
         }
         else
         {
-            if (Input.GetMouseButtonDown(0))
-                HandleInput(TouchPhase.Began, Input.mousePosition);
-            else if (Input.GetMouseButton(0))
-                HandleInput(TouchPhase.Moved, Input.mousePosition);
-            else if (Input.GetMouseButtonUp(0))
-                HandleInput(TouchPhase.Ended, Input.mousePosition);
+            dragOffset = Vector3.zero;
         }
     }
 
-    private void HandleInput(TouchPhase phase, Vector2 screenPos)
+    public void OnDrag(PointerEventData eventData)
     {
-        Ray ray = cam.ScreenPointToRay(screenPos);
-
-        switch (phase)
+        Ray ray = mainCamera.ScreenPointToRay(eventData.position);
+        if (dragPlane.Raycast(ray, out float enter))
         {
-            case TouchPhase.Began:
-                if (Physics.Raycast(ray, out RaycastHit hit, 10000f, unitLayer))
+            Vector3 hitPoint = ray.GetPoint(enter);
+            Vector3 targetPosition = hitPoint + dragOffset;
+
+            transform.position = new Vector3(targetPosition.x, fixedHeight, targetPosition.z);
+        }
+    }
+
+    public void OnEndDrag(PointerEventData eventData)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(eventData.position);
+        if (Physics.Raycast(ray, out var hit, 10000000f, LayerMask.GetMask("BoardCell")))
+        {
+            var cell = hit.collider.GetComponent<BoardSpawnCell>();
+            var targetUnit = cell.CurrentHero;
+
+            if (cell == null)
+            {
+                ReturnToOriginalPosition();
+                return;
+            }
+
+            if (!cell.IsEmpty)
+            {
+                bool canMerge = targetUnit.Config.heroType == entity.Config.heroType
+                                && targetUnit != entity
+                                && targetUnit.CanMergeWith(entity);
+
+                if (canMerge)
                 {
-                    selectedUnit = hit.collider.GetComponent<Entity>();
-                    if (selectedUnit != null)
+                    if (cell.CurrentHero.TryMerge(entity))
                     {
-                        originalPosition = selectedUnit.transform.position;
-                        isDragging = true;
+                        entity = null;
+                        Destroy(gameObject);
+                        return;
                     }
                 }
-                break;
-
-            case TouchPhase.Moved:
-                if (isDragging && selectedUnit != null)
+                else
                 {
-                    if (dragPlane.Raycast(ray, out float distance))
-                    {
-                        Vector3 worldPoint = ray.GetPoint(distance);
-                        selectedUnit.transform.position = new Vector3(worldPoint.x, fixedY, worldPoint.z);
-                    }
-                }
-                break;
+                    BoardSpawnCell oldCell = entity.CurrentCell;
 
-            case TouchPhase.Ended:
-            case TouchPhase.Canceled:
-                if (isDragging && selectedUnit != null)
-                {
-                    Ray rayDown = new Ray(selectedUnit.transform.position, Vector3.down);
-                    if (Physics.Raycast(rayDown, out RaycastHit dropHit, 10000f, cellLayer))
+                    if (oldCell != null && oldCell != cell)
                     {
-                        BoardSpawnCell cell = dropHit.collider.GetComponent<BoardSpawnCell>();
+                        oldCell.Clear();
+                        cell.Clear();
 
-                        if (cell != null)
-                        {
-                            Entity targetUnit = cell.CurrentHero;
-                            if (targetUnit != null && targetUnit.Config.heroType == selectedUnit.Config.heroType && targetUnit != selectedUnit)
-                            {
-                                bool merged = targetUnit.Merge(selectedUnit);
-                                if (!merged)
-                                {
-                                    selectedUnit.transform.position = originalPosition;
-                                }
-                            }
-                            else
-                            {
-                                //if (cell.IsEmpty)
-                                //    selectedUnit.ChangeCell(cell);
-                                //else
-                                    selectedUnit.transform.position = originalPosition;
-                            }
-                        }
-                        else
-                        {
-                            selectedUnit.transform.position = originalPosition;
-                        }
+                        entity.AssignCell(cell);
+                        cell.AssignHero(entity);
+
+                        targetUnit.AssignCell(oldCell);
+                        oldCell.AssignHero(targetUnit);
                     }
                     else
                     {
-                        selectedUnit.transform.position = originalPosition;
+                        ReturnToOriginalPosition();
                     }
-
-                    selectedUnit = null;
-                    isDragging = false;
                 }
-                break;
+            }
+
+            if (cell.IsEmpty)
+            {
+                cell.AssignHero(entity);
+            }
+            else
+            {
+                ReturnToOriginalPosition();
+            }
         }
+        else
+        {
+            ReturnToOriginalPosition();
+        }
+    }
+
+    private void ReturnToOriginalPosition()
+    {
+        transform.position = originalPosition;
+        entity.CurrentCell?.AssignHero(entity);
+    }
+
+    private Vector3 GetMouseWorldPosition(PointerEventData eventData)
+    {
+        Ray ray = mainCamera.ScreenPointToRay(eventData.position);
+        if (Physics.Raycast(ray, out var hit, 100f, LayerMask.GetMask("Ground", "Cell")))
+        {
+            return hit.point;
+        }
+        return transform.position;
     }
 }

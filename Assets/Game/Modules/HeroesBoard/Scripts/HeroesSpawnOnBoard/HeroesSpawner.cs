@@ -21,8 +21,8 @@ public class HeroesSpawner : MonoBehaviour
             var hero = Instantiate(heroConfigs[0].HeroPrefab);
             var heroEntity = hero.GetComponent<Entity>();
             heroEntity.Initialize(heroConfigs[0]);
-            heroEntity.ChangeCell(freeCell);
-            //freeCell.PlaceHero(heroEntity);
+
+            freeCell.AssignHero(heroEntity);
         }
     }
 

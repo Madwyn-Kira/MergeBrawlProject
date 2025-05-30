@@ -10,8 +10,8 @@ public class MeleeHero : Entity
 
     }
 
-    public override bool Merge(Entity target)
+    public override bool TryMerge(Entity target)
     {
-        return base.Merge(target);
+        return base.TryMerge(target);
     }
 }
