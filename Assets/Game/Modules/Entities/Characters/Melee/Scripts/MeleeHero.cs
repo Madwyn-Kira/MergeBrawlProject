@@ -1,4 +1,4 @@
-public class MeleeHero : Entity
+public class MeleeHero : HeroController
 {
     private void Start()
     {
@@ -10,7 +10,7 @@ public class MeleeHero : Entity
 
     }
 
-    public override bool TryMerge(Entity target)
+    public override bool TryMerge(HeroController target)
     {
         return base.TryMerge(target);
     }

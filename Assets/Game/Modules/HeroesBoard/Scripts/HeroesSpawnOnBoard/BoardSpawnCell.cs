@@ -4,10 +4,10 @@ public class BoardSpawnCell : MonoBehaviour
 {
     [SerializeField] private Transform placementPoint;
 
-    public Entity CurrentHero { get; private set; }
+    public HeroController CurrentHero { get; private set; }
     public bool IsEmpty => CurrentHero == null;
 
-    public void AssignHero(Entity entity)
+    public void AssignHero(HeroController entity)
     {
         CurrentHero = entity;
         entity.AssignCell(this);
@@ -23,6 +23,6 @@ public class BoardSpawnCell : MonoBehaviour
         CurrentHero = null;
     }
 
-    public bool CanAccept(Entity entity) =>
+    public bool CanAccept(HeroController entity) =>
         IsEmpty || (CurrentHero != null && CurrentHero.CanMergeWith(entity));
 }
