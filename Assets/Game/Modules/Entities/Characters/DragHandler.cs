@@ -7,7 +7,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 {
     private Camera mainCamera;
     private Vector3 originalPosition;
-    private Entity entity;
+    private HeroController entity;
 
     private float fixedHeight = 0f;
     private Vector3 dragOffset;
@@ -16,7 +16,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private void Awake()
     {
         mainCamera = Camera.main;
-        entity = GetComponent<Entity>();
+        entity = GetComponent<HeroController>();
         dragPlane = new Plane(Vector3.up, new Vector3(0, fixedHeight, 0));
     }
 

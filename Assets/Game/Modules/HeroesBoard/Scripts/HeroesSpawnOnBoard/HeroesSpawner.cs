@@ -19,7 +19,7 @@ public class HeroesSpawner : MonoBehaviour
         if (freeCell != null)
         {
             var hero = Instantiate(heroConfigs[0].HeroPrefab);
-            var heroEntity = hero.GetComponent<Entity>();
+            var heroEntity = hero.GetComponent<HeroController>();
             heroEntity.Initialize(heroConfigs[0]);
 
             freeCell.AssignHero(heroEntity);
