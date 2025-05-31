@@ -142,6 +142,9 @@ GameObject:
   - component: {fileID: 2274445124974583875}
   - component: {fileID: -5624771970082286158}
   - component: {fileID: -6055067627040698755}
+  - component: {fileID: 4823351266216155983}
+  - component: {fileID: -665465897725912717}
+  - component: {fileID: 5327304152946235554}
   - component: {fileID: 543982471134511997}
   - component: {fileID: 1455996101961459112}
   - component: {fileID: 1865554441807334768}
@@ -233,7 +236,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cf409c2f9bdc6734f8363492ab168400, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  EnemyWeapon: {fileID: -6055067627040698755}
   NavAgent: {fileID: 0}
   Weapon: {fileID: -6055067627040698755}
 --- !u!114 &-6055067627040698755
@@ -249,6 +251,45 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   weaponData: {fileID: 11400000, guid: 6587b08c29c684e43a3abb53848da04c, type: 2}
+--- !u!114 &4823351266216155983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841219705563842274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e46c6b10199b44cbd5f7c22cbc3e5b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &-665465897725912717
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841219705563842274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6dc8d304671a3f34aa6a79f64ccdc623, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5327304152946235554
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841219705563842274}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17a0aaff837369f4abea2547b9fa00b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetLayer:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &543982471134511997
 MonoBehaviour:
   m_ObjectHideFlags: 0

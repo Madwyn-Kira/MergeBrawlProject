@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.Rendering.STP;
 
 public abstract class Entity : MonoBehaviour, IEntityEvents
 {
@@ -9,6 +10,7 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
     protected HealthController _healthController;
 
     public StateMachine CurrentState;
+    public BoardSpawnCell CurrentCell { get; private set; }
 
     [HideInInspector]
     public NavMeshAgent NavAgent;
@@ -30,6 +32,12 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
     }
 
     abstract public void Fight();
+
+
+    public void AssignCell(BoardSpawnCell cell)
+    {
+        CurrentCell = cell;
+    }
 
     virtual public void ChangeState(StateMachine newState)
     {

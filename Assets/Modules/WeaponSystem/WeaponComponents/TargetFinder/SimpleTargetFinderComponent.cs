@@ -17,8 +17,16 @@ public class SimpleTargetFinderComponent : MonoBehaviour, ITargetFinder
     public void Initialize(WeaponData weaponData)
     {
         _weaponData = weaponData;
+    }
 
+    public void StartFindCoroutine()
+    {
         StartCoroutine(FindTargetCoroutine());
+    }
+
+    public void StopFindCoroutine()
+    {
+        StopAllCoroutines();
     }
 
     public GameObject FindTarget()

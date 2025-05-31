@@ -11,8 +11,6 @@ public abstract class HeroController : Entity
     [HideInInspector]
     public HeroEvolutionChainConfig EvolutionConfig;
 
-    public BoardSpawnCell CurrentCell { get; private set; }
-
     public override void InitializeParams()
     {
         base.InitializeParams();
@@ -34,12 +32,6 @@ public abstract class HeroController : Entity
 
         //ChangeState(new EnemyIdleState());
     }
-
-    public void AssignCell(BoardSpawnCell cell)
-    {
-        CurrentCell = cell;
-    }
-
     public bool CanMergeWith(HeroController other)
     {
         return other != null

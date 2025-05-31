@@ -1,10 +1,5 @@
 public class MeleeHero : HeroController
 {
-    private void Start()
-    {
-        base.InitializeParams();
-    }
-
     public override void Fight()
     {
 
