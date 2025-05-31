@@ -4,8 +4,6 @@ using UnityEngine.AI;
 
 public abstract class Entity : MonoBehaviour, IEntityEvents
 {
-    [SerializeField]
-    private WeaponController EnemyWeapon;
     public abstract WeaponController WeaponController { get; }
 
     protected HealthController _healthController;
@@ -18,6 +16,7 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
     public event Action OnMerge;
     public event Action<Entity> OnSpawned;
     public event Action<Entity> OnDestroy;
+    public event Action OnStartWar;
 
     virtual public void InitializeParams()
     {
