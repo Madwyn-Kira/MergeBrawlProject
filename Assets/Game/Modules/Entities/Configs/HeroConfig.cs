@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Configs/Hero Config")]
-public class HeroConfig : ScriptableObject
+public class HeroConfig : ConfigSettings
 {
     public string heroName;
     public HeroType heroType;

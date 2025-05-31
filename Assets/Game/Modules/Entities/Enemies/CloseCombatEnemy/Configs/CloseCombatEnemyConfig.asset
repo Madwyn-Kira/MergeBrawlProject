@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb8b875f5f07d174f9b7b137b1b5d1c9, type: 3}
   m_Name: CloseCombatEnemyConfig
   m_EditorClassIdentifier: 
-  EnemyPrefab: {fileID: 0}
+  EnemyPrefab: {fileID: -5624771970082286158, guid: 85bc9785aad96d74cb534bb13b3d9a55, type: 3}
   MaxHealth: 100
   Speed: 5
   Damage: 4

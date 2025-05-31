@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public List<EnemyController> enemiesList = new();
-
     [SerializeField]
     public List<BoardSpawnCell> spawnCells;
+    [SerializeField]
+    public List<ConfigSettings> enemyConfigs;
 
     [HideInInspector]
     public BoardManager board;
@@ -18,12 +18,13 @@ public class EnemySpawner : MonoBehaviour
 
         if (freeCell != null)
         {
-            var hero = Instantiate(heroConfigs[0].HeroPrefab);
-            var heroEntity = hero.GetComponent<HeroController>();
-            heroEntity.InitializeParams();
-            heroEntity.Initialize(heroConfigs[0]);
+            var enemyConfig = enemyConfigs[0] as EnemyConfig;
+            var enemy = Instantiate(enemyConfig.EnemyPrefab);
+            var enemyEntity = enemy.GetComponent<Entity>();
+            enemyEntity.InitializeParams();
+            enemyEntity.Initialize(enemyConfig);
 
-            freeCell.AssignHero(heroEntity);
+            freeCell.AssignHero(enemyEntity);
         }
     }
 

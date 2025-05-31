@@ -55,7 +55,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         if (Physics.Raycast(ray, out var hit, 10000000f, LayerMask.GetMask("BoardCell")))
         {
             var cell = hit.collider.GetComponent<BoardSpawnCell>();
-            var targetUnit = cell.CurrentHero;
+            var targetUnit = cell.CurrentHero as HeroController;
 
             if (cell == null)
             {
@@ -71,7 +71,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
                 if (canMerge)
                 {
-                    if (cell.CurrentHero.TryMerge(entity))
+                    if (targetUnit.TryMerge(entity))
                     {
                         entity = null;
                         Destroy(gameObject);

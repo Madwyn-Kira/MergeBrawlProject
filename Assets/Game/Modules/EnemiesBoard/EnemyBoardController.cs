@@ -9,4 +9,10 @@ public class EnemyBoardController : MonoBehaviour
 
     public void RegisterUnit(Entity unit) => units.Add(unit);
     public void UnregisterUnit(Entity unit) => units.Remove(unit);
+
+    private void Start()
+    {
+        for (int i = 0; i < 3; i++)
+            Spawner.SpawnEnemy();
+    }
 }
