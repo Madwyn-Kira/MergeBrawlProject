@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.Rendering.STP;
 
 public abstract class Entity : MonoBehaviour, IEntityEvents
 {
@@ -11,13 +10,14 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
 
     public StateMachine CurrentState;
     public BoardSpawnCell CurrentCell { get; private set; }
+    public HealthController HealthController { get { return _healthController; } }
 
     [HideInInspector]
     public NavMeshAgent NavAgent;
 
     public event Action OnMerge;
     public event Action<Entity> OnSpawned;
-    public event Action<Entity> OnDestroy;
+    public event Action<Entity> OnDestroyEntity;
     public event Action OnStartWar;
 
     virtual public void InitializeParams()
@@ -33,6 +33,11 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
 
     abstract public void Fight();
 
+    private void Update()
+    {
+        if (CurrentState != null)
+            CurrentState.LocalUpdate();
+    }
 
     public void AssignCell(BoardSpawnCell cell)
     {
@@ -48,9 +53,11 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
         CurrentState.EnterState(this);
     }
 
-    virtual public void OnDestroyEntity()
+    virtual public void DestroyEntity()
     {
-        OnDestroy?.Invoke(this);
+        OnDestroyEntity?.Invoke(this);
+
+        CurrentCell.transform.parent.GetComponent<IBoard>().UnregisterUnit(this);
         Destroy(gameObject);
     }
 }

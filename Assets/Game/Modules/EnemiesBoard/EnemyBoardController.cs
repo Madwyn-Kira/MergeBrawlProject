@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBoardController : MonoBehaviour
+public class EnemyBoardController : MonoBehaviour, IBoard
 {
     public EnemySpawner Spawner;
 
     private List<Entity> units = new();
+    public List<Entity> Units { get { return units; } }
 
     public void RegisterUnit(Entity unit) => units.Add(unit);
     public void UnregisterUnit(Entity unit) => units.Remove(unit);

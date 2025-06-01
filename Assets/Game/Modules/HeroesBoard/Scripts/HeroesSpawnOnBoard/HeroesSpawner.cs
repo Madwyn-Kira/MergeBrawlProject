@@ -9,7 +9,6 @@ public class HeroesSpawner : MonoBehaviour
     [SerializeField]
     public List<ConfigSettings> heroConfigs;
 
-    [HideInInspector]
     public BoardManager board;
 
     public void SpawnRandomUnit()
@@ -24,6 +23,7 @@ public class HeroesSpawner : MonoBehaviour
             heroEntity.InitializeParams();
             heroEntity.Initialize(heroConfigs[0]);
 
+            board.RegisterUnit(heroEntity);
             freeCell.AssignHero(heroEntity);
         }
     }

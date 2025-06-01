@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class HeroController : Entity
 {
@@ -11,9 +12,14 @@ public abstract class HeroController : Entity
     [HideInInspector]
     public HeroEvolutionChainConfig EvolutionConfig;
 
+    [HideInInspector]
+    public DragHandler dragHandler;
+
     public override void InitializeParams()
     {
         base.InitializeParams();
+
+        dragHandler = GetComponent<DragHandler>();
 
         ChangeState(new HeroMergePreparationState());
     }
@@ -32,6 +38,14 @@ public abstract class HeroController : Entity
 
         //ChangeState(new EnemyIdleState());
     }
+
+    private void LoadNewConfig<T>(T newConfig)
+    {
+        Config = newConfig as HeroConfig;
+        EvolutionConfig = Config.evolutionConfig;
+        GetComponent<MeshRenderer>().material = Config.materialPrefab;
+    }
+
     public bool CanMergeWith(HeroController other)
     {
         return other != null
@@ -48,7 +62,7 @@ public abstract class HeroController : Entity
         if (EvolutionConfig.EvolutionChain.IndexOf(Config) < EvolutionConfig.EvolutionChain.Count - 1)
         {
             HeroConfig nextData = EvolutionConfig.EvolutionChain[_currentConfigIndexInEvolution + 1];
-            Initialize(nextData);
+            LoadNewConfig(nextData);
             Destroy(other.gameObject);
         }
 
@@ -63,11 +77,13 @@ public abstract class HeroController : Entity
     private void Die()
     {
         //ChangeState(new EnemyDieState());
+        DestroyEntity();
+        Destroy(gameObject);
     }
 
-    override public void OnDestroyEntity()
+    override public void DestroyEntity()
     {
-        base.OnDestroyEntity();
+        base.DestroyEntity();
 
         base._healthController.OnHealthChanged -= ChangeHealth;
         base._healthController.OnDeath -= Die;

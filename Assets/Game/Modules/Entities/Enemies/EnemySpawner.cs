@@ -9,8 +9,7 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField]
     public List<ConfigSettings> enemyConfigs;
 
-    [HideInInspector]
-    public BoardManager board;
+    public EnemyBoardController board;
 
     public void SpawnEnemy()
     {
@@ -24,6 +23,7 @@ public class EnemySpawner : MonoBehaviour
             enemyEntity.InitializeParams();
             enemyEntity.Initialize(enemyConfig);
 
+            board.RegisterUnit(enemyEntity);
             freeCell.AssignHero(enemyEntity);
         }
     }

@@ -1,18 +1,20 @@
 public class HeroMergePreparationState : StateMachine
 {
-    private Entity _controller;
+    private HeroController _controller;
 
     public override void EnterState<T>(T controller)
     {
-        _controller = controller as Entity;
+        _controller = controller as HeroController;
 
         _controller.OnMerge += SucessMerge;
+        _controller.HealthController.ChangeHPBarEnable(false);
         _controller.NavAgent.enabled = false;
     }
 
     public override void ExitState()
     {
         _controller.OnMerge -= SucessMerge;
+        _controller.HealthController.ChangeHPBarEnable(true);
         _controller.NavAgent.enabled = true;
     }
 

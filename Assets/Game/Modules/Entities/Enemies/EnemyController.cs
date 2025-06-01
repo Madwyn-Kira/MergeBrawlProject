@@ -24,7 +24,7 @@ public abstract class EnemyController : Entity
 
         Weapon.Initialize();
 
-        //ChangeState(new EnemyIdleState());
+        ChangeState(new CloseCombatIdleState());
     }
 
     private void ChangeHealth(float amount)
@@ -35,11 +35,12 @@ public abstract class EnemyController : Entity
     private void Die()
     {
         //ChangeState(new EnemyDieState());
+        Destroy(gameObject);
     }
 
-    override public void OnDestroyEntity()
+    override public void DestroyEntity()
     {
-        base.OnDestroyEntity();
+        base.DestroyEntity();
 
         base._healthController.OnHealthChanged -= ChangeHealth;
         base._healthController.OnDeath -= Die;

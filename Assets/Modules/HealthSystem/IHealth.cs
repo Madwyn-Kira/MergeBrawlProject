@@ -10,6 +10,7 @@ public interface IHealth
     event Action<float> OnHealthChanged;
     event Action OnDeath;
 
+    public void ChangeHPBarEnable(bool state);
     void TakeDamage(float damage);
     void Heal(float amount);
 }
