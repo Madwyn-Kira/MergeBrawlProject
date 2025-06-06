@@ -8,6 +8,5 @@ public class HeroConfig : ConfigSettings
     public int baseHealth;
     public int baseDamage;
     public HeroEvolutionChainConfig evolutionConfig;
-    public Material materialPrefab;
     public GameObject HeroPrefab;
 }

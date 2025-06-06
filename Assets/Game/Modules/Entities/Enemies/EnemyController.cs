@@ -15,7 +15,7 @@ public abstract class EnemyController : Entity
 
     override public void Initialize<T>(T newConfig)
     {
-
+        base.Initialize(newConfig);
         _enemySettings = newConfig as EnemyConfig;
 
         base._healthController.Initialize(null, _enemySettings.MaxHealth);

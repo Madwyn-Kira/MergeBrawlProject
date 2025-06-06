@@ -1,1 +1,1 @@
-public enum HeroType { Melee, Swardmaster, Blue, LightBlue, Green }
+public enum HeroType { Amber, Ash, BoGeo, Brock, Buzz }

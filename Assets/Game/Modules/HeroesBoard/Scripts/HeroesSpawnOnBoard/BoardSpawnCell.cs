@@ -13,7 +13,7 @@ public class BoardSpawnCell : MonoBehaviour
         entity.AssignCell(this);
 
         entity.transform.SetParent(transform);
-        entity.transform.localScale = new Vector3(1, 1, 1);
+        entity.transform.localScale = CurrentHero.ConfigSettings.ScaleForSpawn;
 
         entity.transform.localPosition = placementPoint.localPosition;
     }

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: MeleeCharacterEvolutionChainConfig
   m_EditorClassIdentifier: 
   EvolutionChain:
+  - {fileID: 11400000, guid: 4b2a21bca163bee498e8fd5c661fd7b1, type: 2}
+  - {fileID: 11400000, guid: e12f046f64708c246b290374faec122f, type: 2}
+  - {fileID: 11400000, guid: f7d70acc53bd5d44193782a0a4dd108e, type: 2}
   - {fileID: 11400000, guid: cc32248e894723f489ca4405a73e5a38, type: 2}
   - {fileID: 11400000, guid: 4ec2308b401482547b72382c92df3886, type: 2}
-  - {fileID: 11400000, guid: 4b2a21bca163bee498e8fd5c661fd7b1, type: 2}
-  - {fileID: 11400000, guid: f7d70acc53bd5d44193782a0a4dd108e, type: 2}
-  - {fileID: 11400000, guid: e12f046f64708c246b290374faec122f, type: 2}

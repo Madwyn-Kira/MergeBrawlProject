@@ -14,6 +14,8 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
 
     [HideInInspector]
     public NavMeshAgent NavAgent;
+    [HideInInspector]
+    public ConfigSettings ConfigSettings;
 
     public event Action OnMerge;
     public event Action<Entity> OnSpawned;
@@ -28,7 +30,7 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
 
     virtual public void Initialize<T>(T newConfig)
     {
-
+        ConfigSettings = newConfig as ConfigSettings;
     }
 
     abstract public void Fight();

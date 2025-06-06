@@ -28,6 +28,20 @@ public class HeroesSpawner : MonoBehaviour
         }
     }
 
+    public void SpawnInCellWithNewConfig(BoardSpawnCell cell, HeroConfig config)
+    {
+        //if (!cell.IsEmpty) return;
+
+        var heroConfig = config;
+        var hero = Instantiate(heroConfig.HeroPrefab);
+        var heroEntity = hero.GetComponent<HeroController>();
+        heroEntity.InitializeParams();
+        heroEntity.Initialize(heroConfig);
+
+        board.RegisterUnit(heroEntity);
+        cell.AssignHero(heroEntity);
+    }
+
     private BoardSpawnCell GetFreeCell()
     {
         return spawnCells.Where(item => item.IsEmpty == true).FirstOrDefault();
