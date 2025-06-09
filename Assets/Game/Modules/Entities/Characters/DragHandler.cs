@@ -9,7 +9,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     private Vector3 originalPosition;
     private HeroController entity;
 
-    private float fixedHeight = 0f;
+    private float fixedHeight = 2f;
     private Vector3 dragOffset;
     private Plane dragPlane;
 
@@ -17,7 +17,10 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
     {
         mainCamera = Camera.main;
         entity = GetComponent<HeroController>();
-        dragPlane = new Plane(Vector3.up, new Vector3(0, fixedHeight, 0));
+
+        fixedHeight = transform.position.y;
+
+        dragPlane = new Plane(Vector3.up, new Vector3(0, transform.position.y, 0));
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -45,7 +48,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
             Vector3 hitPoint = ray.GetPoint(enter);
             Vector3 targetPosition = hitPoint + dragOffset;
 
-            transform.position = new Vector3(targetPosition.x, fixedHeight, targetPosition.z);
+            transform.position = new Vector3(targetPosition.x, transform.position.y, targetPosition.z);
         }
     }
 
@@ -55,7 +58,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
         if (Physics.Raycast(ray, out var hit, 10000000f, LayerMask.GetMask("BoardCell")))
         {
             var cell = hit.collider.GetComponent<BoardSpawnCell>();
-            var targetUnit = cell.CurrentHero;
+            var targetUnit = cell.CurrentHero as HeroController;
 
             if (cell == null)
             {
@@ -71,7 +74,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
                 if (canMerge)
                 {
-                    if (cell.CurrentHero.TryMerge(entity))
+                    if (targetUnit.TryMerge(entity, cell.transform.parent.GetComponent<HeroesSpawner>()))
                     {
                         entity = null;
                         Destroy(gameObject);

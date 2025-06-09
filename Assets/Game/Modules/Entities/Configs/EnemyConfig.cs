@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Configs/Enemy Config")]
-public class EnemyConfig : ScriptableObject
+public class EnemyConfig : ConfigSettings
 {
     public Entity EnemyPrefab;
 

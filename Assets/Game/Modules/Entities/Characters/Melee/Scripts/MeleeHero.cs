@@ -1,17 +1,17 @@
 public class MeleeHero : HeroController
 {
-    private void Start()
-    {
-        base.InitializeParams();
-    }
-
     public override void Fight()
     {
-
+        ChangeState(new MeleeHeroAttackState());
     }
 
-    public override bool TryMerge(HeroController target)
+    public override bool TryMerge(HeroController target, HeroesSpawner spawner)
     {
-        return base.TryMerge(target);
+        return base.TryMerge(target, spawner);
+    }
+
+    private void OnDestroy()
+    {
+        DestroyEntity();
     }
 }

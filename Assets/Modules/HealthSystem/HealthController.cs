@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class HealthController : MonoBehaviour
+public class HealthController : MonoBehaviour, IHealth
 {
     [SerializeField] private HPBar healthBar;
     [SerializeField] private float maxHealth = 100f;
@@ -26,6 +26,11 @@ public class HealthController : MonoBehaviour
 
         healthBar.InitializeHPBar(maxHealth);
         CurrentHealth = maxHealth;
+    }
+
+    public void ChangeHPBarEnable(bool state)
+    {
+        healthBar.gameObject.SetActive(state);
     }
 
     public void TakeDamage(float damage)

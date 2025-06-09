@@ -17,7 +17,7 @@ public class DamageDealer : MonoBehaviour
         gameObject.SetActive(true);
         IsBulletFree = false;
 
-        _target.GetComponent<Entity>().OnDestroy += TargetIsDie;
+        _target.GetComponent<Entity>().OnDestroyEntity += TargetIsDie;
 
         RunBullet();
     }
@@ -54,6 +54,6 @@ public class DamageDealer : MonoBehaviour
     private void TargetIsDie(Entity entity)
     {
         DisactivateBullet();
-        entity.OnDestroy -= TargetIsDie;
+        entity.OnDestroyEntity -= TargetIsDie;
     }
 }

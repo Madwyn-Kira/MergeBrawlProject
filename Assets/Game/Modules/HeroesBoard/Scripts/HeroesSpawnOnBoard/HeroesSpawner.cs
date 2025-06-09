@@ -7,9 +7,8 @@ public class HeroesSpawner : MonoBehaviour
     [SerializeField]
     public List<BoardSpawnCell> spawnCells;
     [SerializeField]
-    public List<HeroConfig> heroConfigs;
+    public List<ConfigSettings> heroConfigs;
 
-    [HideInInspector]
     public BoardManager board;
 
     public void SpawnRandomUnit()
@@ -18,12 +17,29 @@ public class HeroesSpawner : MonoBehaviour
 
         if (freeCell != null)
         {
-            var hero = Instantiate(heroConfigs[0].HeroPrefab);
+            var heroConfig = heroConfigs[0] as HeroConfig;
+            var hero = Instantiate(heroConfig.HeroPrefab);
             var heroEntity = hero.GetComponent<HeroController>();
+            heroEntity.InitializeParams();
             heroEntity.Initialize(heroConfigs[0]);
 
+            board.RegisterUnit(heroEntity);
             freeCell.AssignHero(heroEntity);
         }
+    }
+
+    public void SpawnInCellWithNewConfig(BoardSpawnCell cell, HeroConfig config)
+    {
+        //if (!cell.IsEmpty) return;
+
+        var heroConfig = config;
+        var hero = Instantiate(heroConfig.HeroPrefab);
+        var heroEntity = hero.GetComponent<HeroController>();
+        heroEntity.InitializeParams();
+        heroEntity.Initialize(heroConfig);
+
+        board.RegisterUnit(heroEntity);
+        cell.AssignHero(heroEntity);
     }
 
     private BoardSpawnCell GetFreeCell()

@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: HandWeapon
   m_EditorClassIdentifier: 
   weaponName: Hand
-  damage: 2
-  fireRate: 1
-  range: 1.5
+  damage: 5
+  fireRate: 0.5
+  range: 684.72
   reloadTime: 0
   ammunition: {fileID: 0}

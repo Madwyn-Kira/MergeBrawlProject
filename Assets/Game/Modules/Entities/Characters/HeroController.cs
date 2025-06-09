@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public abstract class HeroController : Entity
 {
@@ -11,20 +12,24 @@ public abstract class HeroController : Entity
     [HideInInspector]
     public HeroEvolutionChainConfig EvolutionConfig;
 
-    public BoardSpawnCell CurrentCell { get; private set; }
+    [HideInInspector]
+    public DragHandler dragHandler;
 
     public override void InitializeParams()
     {
         base.InitializeParams();
+
+        dragHandler = GetComponent<DragHandler>();
 
         ChangeState(new HeroMergePreparationState());
     }
 
     override public void Initialize<T>(T newConfig)
     {
+        base.Initialize(newConfig);
         Config = newConfig as HeroConfig;
         EvolutionConfig = Config.evolutionConfig;
-        GetComponent<MeshRenderer>().material = Config.materialPrefab;
+        //GetComponent<MeshRenderer>().material = Config.materialPrefab;
 
         base._healthController.Initialize(null, Config.baseHealth);
         base._healthController.OnHealthChanged += ChangeHealth;
@@ -35,9 +40,11 @@ public abstract class HeroController : Entity
         //ChangeState(new EnemyIdleState());
     }
 
-    public void AssignCell(BoardSpawnCell cell)
+    private void LoadNewConfig<T>(T newConfig)
     {
-        CurrentCell = cell;
+        Config = newConfig as HeroConfig;
+        EvolutionConfig = Config.evolutionConfig;
+        //GetComponent<MeshRenderer>().material = Config.materialPrefab;
     }
 
     public bool CanMergeWith(HeroController other)
@@ -47,7 +54,7 @@ public abstract class HeroController : Entity
                && other.Config.heroType == Config.heroType;
     }
 
-    virtual public bool TryMerge(HeroController other)
+    virtual public bool TryMerge(HeroController other, HeroesSpawner spawner)
     {
         if (!CanMergeWith(other))
             return false;
@@ -56,7 +63,12 @@ public abstract class HeroController : Entity
         if (EvolutionConfig.EvolutionChain.IndexOf(Config) < EvolutionConfig.EvolutionChain.Count - 1)
         {
             HeroConfig nextData = EvolutionConfig.EvolutionChain[_currentConfigIndexInEvolution + 1];
-            Initialize(nextData);
+            //LoadNewConfig(nextData);
+
+            //CurrentCell.Clear();
+
+            spawner.SpawnInCellWithNewConfig(CurrentCell, nextData);
+            Destroy(this.gameObject);
             Destroy(other.gameObject);
         }
 
@@ -71,11 +83,13 @@ public abstract class HeroController : Entity
     private void Die()
     {
         //ChangeState(new EnemyDieState());
+        DestroyEntity();
+        Destroy(gameObject);
     }
 
-    override public void OnDestroyEntity()
+    override public void DestroyEntity()
     {
-        base.OnDestroyEntity();
+        base.DestroyEntity();
 
         base._healthController.OnHealthChanged -= ChangeHealth;
         base._healthController.OnDeath -= Die;

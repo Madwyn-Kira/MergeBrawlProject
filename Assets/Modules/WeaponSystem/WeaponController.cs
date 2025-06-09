@@ -12,6 +12,8 @@ public class WeaponController : MonoBehaviour, IWeapon
     private IReloadComponent _reloadComponent;
     private ITargetFinder _targetFinder;
 
+    public ITargetFinder TargetFinder { get { return _targetFinder; } }
+
     public void Initialize()
     {
         _shootComponent = GetComponent<IShootComponent>();
@@ -20,7 +22,15 @@ public class WeaponController : MonoBehaviour, IWeapon
 
         _shootComponent.Initialize(weaponData);
         _targetFinder.Initialize(weaponData);
+    }
 
+    public void StopFire()
+    {
+        StopAllCoroutines();
+    }
+
+    public void StartFire()
+    {
         StartCoroutine(AutomaticShoot());
     }
 

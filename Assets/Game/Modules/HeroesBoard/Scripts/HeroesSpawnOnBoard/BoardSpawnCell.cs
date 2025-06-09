@@ -4,16 +4,16 @@ public class BoardSpawnCell : MonoBehaviour
 {
     [SerializeField] private Transform placementPoint;
 
-    public HeroController CurrentHero { get; private set; }
+    public Entity CurrentHero { get; private set; }
     public bool IsEmpty => CurrentHero == null;
 
-    public void AssignHero(HeroController entity)
+    public void AssignHero(Entity entity)
     {
         CurrentHero = entity;
         entity.AssignCell(this);
 
         entity.transform.SetParent(transform);
-        entity.transform.localScale = new Vector3(1, 1, 1);
+        entity.transform.localScale = CurrentHero.ConfigSettings.ScaleForSpawn;
 
         entity.transform.localPosition = placementPoint.localPosition;
     }
@@ -23,6 +23,10 @@ public class BoardSpawnCell : MonoBehaviour
         CurrentHero = null;
     }
 
-    public bool CanAccept(HeroController entity) =>
-        IsEmpty || (CurrentHero != null && CurrentHero.CanMergeWith(entity));
+    public bool CanAccept(HeroController entity)
+    {
+        var _current = CurrentHero as HeroController;
+
+        return IsEmpty || (_current != null && _current.CanMergeWith(entity));
+    }
 }
