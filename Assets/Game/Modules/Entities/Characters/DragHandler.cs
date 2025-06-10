@@ -74,6 +74,7 @@ public class DragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndD
 
                 if (canMerge)
                 {
+                    targetUnit.CurrentCell.Board.UnregisterUnit(targetUnit);
                     if (targetUnit.TryMerge(entity, cell.transform.parent.GetComponent<HeroesSpawner>()))
                     {
                         entity = null;

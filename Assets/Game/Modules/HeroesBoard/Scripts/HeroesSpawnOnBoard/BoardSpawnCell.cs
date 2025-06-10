@@ -1,15 +1,28 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public class BoardSpawnCell : MonoBehaviour
 {
     [SerializeField] private Transform placementPoint;
 
-    public Entity CurrentHero { get; private set; }
-    public bool IsEmpty => CurrentHero == null;
+    [SerializeField] public Entity CurrentHero { get; private set; }
+    [SerializeField] public bool IsEmpty => CurrentHero == null;
+
+    [SerializeField] public IBoard Board;
+
+    private void Awake()
+    {
+        Board = transform.parent.GetComponent<IBoard>();
+    }
 
     public void AssignHero(Entity entity)
     {
         CurrentHero = entity;
+
+        if (entity.CurrentCell != null)
+            Board.UnitMoveCell(entity, entity.CurrentCell, this);
+
         entity.AssignCell(this);
 
         entity.transform.SetParent(transform);

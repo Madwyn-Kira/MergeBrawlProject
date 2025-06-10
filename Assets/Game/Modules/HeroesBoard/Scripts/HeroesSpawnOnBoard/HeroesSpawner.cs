@@ -7,7 +7,7 @@ public class HeroesSpawner : MonoBehaviour
     [SerializeField]
     public List<BoardSpawnCell> spawnCells;
     [SerializeField]
-    public List<ConfigSettings> heroConfigs;
+    public List<HeroConfig> heroConfigs;
 
     public BoardManager board;
 
@@ -23,8 +23,8 @@ public class HeroesSpawner : MonoBehaviour
             heroEntity.InitializeParams();
             heroEntity.Initialize(heroConfigs[0]);
 
-            board.RegisterUnit(heroEntity);
             freeCell.AssignHero(heroEntity);
+            board.RegisterUnit(heroEntity);
         }
     }
 
@@ -38,8 +38,8 @@ public class HeroesSpawner : MonoBehaviour
         heroEntity.InitializeParams();
         heroEntity.Initialize(heroConfig);
 
-        board.RegisterUnit(heroEntity);
         cell.AssignHero(heroEntity);
+        board.RegisterUnit(heroEntity);
     }
 
     private BoardSpawnCell GetFreeCell()

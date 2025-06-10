@@ -1,17 +1,28 @@
 public class PreparationAndPurchaseState : StateMachine
 {
+    private Bootstrap _bootstrapController;
+
     public override void EnterState<T>(T controller)
     {
-        throw new System.NotImplementedException();
+        _bootstrapController = controller as Bootstrap;
+
+        _bootstrapController.ChangeActivateStateObjectsForStage(_bootstrapController.ObjectsForPreparationStage, true);
+        _bootstrapController.FightCycleController.OnStartFight += StartFight;
     }
 
     public override void ExitState()
     {
-        throw new System.NotImplementedException();
+        _bootstrapController.ChangeActivateStateObjectsForStage(_bootstrapController.ObjectsForPreparationStage, false);
+        _bootstrapController.FightCycleController.OnStartFight -= StartFight;
     }
 
     public override void LocalUpdate()
     {
-        throw new System.NotImplementedException();
+
+    }
+
+    private void StartFight()
+    {
+        _bootstrapController.ChangeState(new GameFightState());
     }
 }

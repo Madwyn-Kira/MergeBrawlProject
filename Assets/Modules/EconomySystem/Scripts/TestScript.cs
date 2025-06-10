@@ -51,7 +51,7 @@ namespace Resources.Test
 
             if (Input.GetKeyDown(KeyCode.F))
             {
-                resourceManager.AddResources(saver.Deserialize<Resource>(path));
+                //resourceManager.AddResources(saver.Deserialize<Resource>(path));
 
                 foreach (Resource resource in resourceManager.Resources)
                 {

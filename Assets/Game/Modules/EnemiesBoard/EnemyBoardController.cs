@@ -9,7 +9,13 @@ public class EnemyBoardController : MonoBehaviour, IBoard
     public List<Entity> Units { get { return units; } }
 
     public void RegisterUnit(Entity unit) => units.Add(unit);
-    public void UnregisterUnit(Entity unit) => units.Remove(unit);
+
+    public void UnitMoveCell(Entity unit, BoardSpawnCell oldCell, BoardSpawnCell newCell)
+    {
+
+    }
+
+    public void UnregisterUnit(Entity unit, bool isDead = false) => units.Remove(unit);
 
     private void Start()
     {

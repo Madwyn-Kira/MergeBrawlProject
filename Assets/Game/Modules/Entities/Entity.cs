@@ -58,8 +58,7 @@ public abstract class Entity : MonoBehaviour, IEntityEvents
     virtual public void DestroyEntity()
     {
         OnDestroyEntity?.Invoke(this);
-
-        CurrentCell.transform.parent.GetComponent<IBoard>().UnregisterUnit(this);
+        //CurrentCell.transform.parent.GetComponent<IBoard>().UnregisterUnit(this, true);
         Destroy(gameObject);
     }
 }

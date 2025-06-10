@@ -106,7 +106,7 @@ namespace Resources
         {
             if (File.Exists(path))
             {
-                AddResources(saver.Deserialize<Resource>(path));
+                //AddResources(saver.Deserialize<Resource>(path));
             }
             else
             {

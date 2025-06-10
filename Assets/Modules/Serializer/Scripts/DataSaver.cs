@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using System.Threading;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using UnityEngine;
+using Unity.VisualScripting.FullSerializer;
 
 namespace Datasaver
 {
@@ -16,7 +18,7 @@ namespace Datasaver
 
         JsonSerializer serializer = new JsonSerializer();
 
-        Semaphore sem = new Semaphore(1, 1);
+        SemaphoreSlim sem = new SemaphoreSlim(1, 1);
 
         /// <summary>
         /// Сериализует переданный объект в строку json и вернет ее
@@ -51,9 +53,13 @@ namespace Datasaver
         /// <typeparam name="T"></typeparam>
         /// <param name="obj"></param>
         /// <param name="path"></param>
-        public void Serialize<T>(T obj, string path)
+        public async Task Serialize<T>(T obj, string path)
         {
-            AsyncSerialize<T>(obj, path);
+            //string _path = path == "" ? Application.persistentDataPath : path;
+
+            string _path = Application.persistentDataPath + path;
+
+            await AsyncSerialize<T>(obj, _path);
         }
 
         /// <summary>
@@ -62,9 +68,13 @@ namespace Datasaver
         /// <typeparam name="T"></typeparam>
         /// <param name="path"></param>
         /// <returns></returns>
-        public List<T> Deserialize<T>(string path)
+        public async Task<List<T>> Deserialize<T>(string path)
         {
-            List<T> result = AsyncDeserialize<T>(path).GetAwaiter().GetResult();
+            //string _path = path == "" ? Application.persistentDataPath : path;
+
+            string _path = Application.persistentDataPath + path;
+
+            List<T> result = await AsyncDeserialize<T>(_path);
 
             return result;
         }
@@ -89,34 +99,93 @@ namespace Datasaver
         //    return result;
         //}
 
-        private async void AsyncSerialize<T>(T obj, string path)
+        public async Task AsyncSerialize<T>(T obj, string path)
         {
-            sem.WaitOne();
+            //sem.WaitOne();
+            //
+            //serializer.Converters.Add(new JavaScriptDateTimeConverter());
+            //
+            //using (StreamWriter sw = new StreamWriter(path))
+            //using (JsonWriter writer = new JsonTextWriter(sw))
+            //{
+            //    serializer.Serialize(writer, obj);
+            //}
+            //
+            //sem.Release();
 
-            serializer.Converters.Add(new JavaScriptDateTimeConverter());
-
-            using (StreamWriter sw = new StreamWriter(path))
-            using (JsonWriter writer = new JsonTextWriter(sw))
+            await sem.WaitAsync();
+            try
             {
-                serializer.Serialize(writer, obj);
-            }
+                Directory.CreateDirectory(Path.GetDirectoryName(path));
 
-            sem.Release();
+                var serializer = new JsonSerializer
+                {
+                    ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
+                    TypeNameHandling = TypeNameHandling.All
+                };
+                serializer.Error += (sender, args) =>
+                {
+                    args.ErrorContext.Handled = true;
+                };
+
+                using (var sw = new StreamWriter(path, false))
+                using (var writer = new JsonTextWriter(sw))
+                {
+                    serializer.Serialize(writer, obj);
+                }
+            }
+            finally
+            {
+                sem.Release();
+            }
         }
 
-        private async Task<List<T>> AsyncDeserialize<T>(string path)
+        public async Task<List<T>> AsyncDeserialize<T>(string path)
         {
-            sem.WaitOne();
-
-            List<T> result = null;
-            using (StreamReader r = new StreamReader(path))
+            //sem.WaitOne();
+            //
+            //if (!Directory.Exists(path))
+            //{
+            //    File.CreateText(path);
+            //    using (var writer = new StreamWriter(path, false))
+            //    {
+            //        writer.Write("json");
+            //    }
+            //}
+            //
+            //List<T> result = null;
+            //using (StreamReader r = new StreamReader(path))
+            //{
+            //    string json = r.ReadToEnd();
+            //    result = JsonConvert.DeserializeObject<List<T>>(json);
+            //}
+            //
+            //sem.Release();
+            //return result;
+            await sem.WaitAsync();
+            try
             {
-                string json = r.ReadToEnd();
-                result = JsonConvert.DeserializeObject<List<T>>(json);
-            }
+                if (!File.Exists(path))
+                {
+                    // создаём пустой JSON-массив
+                    File.WriteAllText(path, "[]");
+                }
 
-            sem.Release();
-            return result;
+                var settings = new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.All
+                };
+
+                using (var r = new StreamReader(path))
+                {
+                    string json = await r.ReadToEndAsync();
+                    return JsonConvert.DeserializeObject<List<T>>(json, settings);
+                }
+            }
+            finally
+            {
+                sem.Release();
+            }
         }
     }
 }

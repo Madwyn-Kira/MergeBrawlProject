@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+using System;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Configs/Hero Config")]
@@ -8,5 +10,6 @@ public class HeroConfig : ConfigSettings
     public int baseHealth;
     public int baseDamage;
     public HeroEvolutionChainConfig evolutionConfig;
-    public GameObject HeroPrefab;
+
+    [JsonIgnore] public GameObject HeroPrefab;
 }

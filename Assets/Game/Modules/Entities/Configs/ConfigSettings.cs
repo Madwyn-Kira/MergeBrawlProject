@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 
+[Serializable]
 public abstract class ConfigSettings : ScriptableObject
 {
-    public Vector3 ScaleForSpawn;
+    [SerializeField] public Vector3 ScaleForSpawn;
 }
